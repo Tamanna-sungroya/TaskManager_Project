@@ -17,7 +17,7 @@ TASKFORGE-taskmanagement
 
 * Frontend: HTML, CSS, JavaScript
 * Backend: Node.js, Express.js
-* Database: (MongoDB / None — update if used)
+* Database: 
 
 ---
 
