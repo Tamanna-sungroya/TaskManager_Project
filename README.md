@@ -1,122 +1,206 @@
 # Project Name
 
-TaskForge - Task Management System
+## TaskForge - Task Management System
 
 A full-stack task management application designed to help teams collaborate, track progress, and manage tasks efficiently.
 
 ---
 
-## Features
+### Features:
 
-* RESTful routing system
-* Dynamic content rendering
-* Modular code structure
-* Interactive UI
+* User Authentication (Login / Signup)
+* Role-based access (Admin & User)
+* Task creation & assignment
+* Task status tracking
+* File/Image uploads
+* Dashboard with charts & analytics
+* Responsive UI with modern components
 
 ---
 
-## Tech Stack
+### Tech Stack:
 
-* Frontend: HTML, CSS, JavaScript
+* Frontend: React.js(Vite), Tailwind CSS    
 * Backend: Node.js, Express.js
-* Database: 
+* Database: MongoDB Atlas
 
 ---
 
-## Project Structure
+### Project Structure:
 
 ```
-project-folder/
-│── routes/
-│   └── index.js
-│── controllers/
-│   └── controller.js
-│── public/
-│   ├── css/
-│   └── js/
-│── views/
-│   └── index.html
-│── app.js
-│── package.json
+TASK_MANAGER/
+│
+├── backend/
+│   ├── config/
+│   │   └── db.js
+│   │
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── reportController.js
+│   │   ├── taskController.js
+│   │   └── userController.js
+│   │
+│   ├── middlewares/
+│   │   ├── authMiddleware.js
+│   │   └── uploadMiddleware.js
+│   │
+│   ├── models/
+│   │   ├── Task.js
+│   │   └── User.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── reportRoutes.js
+│   │   ├── taskRoutes.js
+│   │   └── userRoutes.js
+│   │
+│   ├── uploads/
+│   ├── .env
+│   ├── server.js
+│   └── package.json
+│
+├── frontend/
+│   ├── public/
+│   │
+│   ├── src/
+│   │   ├── assets/
+│   │   │   └── images/
+│   │   │
+│   │   ├── components/
+│   │   │   ├── Cards/
+│   │   │   ├── Charts/
+│   │   │   ├── Inputs/
+│   │   │   ├── layouts/
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── SideMenu.jsx
+│   │   │   ├── AvatarGroup.jsx
+│   │   │   ├── Modal.jsx
+│   │   │   ├── Progress.jsx
+│   │   │   ├── TaskListTable.jsx
+│   │   │   └── TaskStatusTabs.jsx
+│   │   │
+│   │   ├── context/
+│   │   │   └── userContext.jsx
+│   │   │
+│   │   ├── hooks/
+│   │   │   └── useUserAuth.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Admin/
+│   │   │   ├── Auth/
+│   │   │   └── User/
+│   │   │
+│   │   ├── routes/
+│   │   │   └── PrivateRoute.jsx
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── apiPaths.js
+│   │   │   ├── axiosInstance.js
+│   │   │   ├── helper.js
+│   │   │   └── uploadImage.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   │
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
 ```
 
 ---
 
-## Routes
+### API Routes:
 
-### Home Route
+#### Auth Routes-
 
-* `GET /`
-* Description: Loads the homepage
-
----
-
-### Example API Route
-
-* `GET /api/data`
-* Description: Fetches data from server
+* POST `/api/auth/register` → Register user
+* POST `/api/auth/login` → Login user
 
 ---
 
-### Create Data
+#### User Routes-
 
-* `POST /api/data`
-* Description: Adds new data
-
----
-
-### Update Data
-
-* `PUT /api/data/:id`
-* Description: Updates existing data
+* GET `/api/users` → Get all users
+* GET `/api/users/:id` → Get user details
 
 ---
 
-### Delete Data
+#### Task Routes-
 
-* `DELETE /api/data/:id`
-* Description: Deletes data
+* POST `/api/tasks` → Create task
+* GET `/api/tasks` → Get all tasks
+* PUT `/api/tasks/:id` → Update task
+* DELETE `/api/tasks/:id` → Delete task
 
 ---
 
-## Installation & Setup
+#### Report Routes-
 
-1. Clone the repository
-2. Install dependencies
+* GET `/api/reports` → Get analytics/report data
+
+---
+
+### Installation & Setup:
+
+1. Clone the repository-
+   
+   ```
+   git clone <repo-url>
+   cd TASK_MANAGER
+   ```
+      
+2. Install dependencies-
 
    ```
    npm install
    ```
-3. Run the server
+   
+3. Backend Setup-
 
    ```
-   node app.js
+   cd backend
+   npm install
+   npm start
    ```
-4. Open browser at
+   
+4. Frontend Setup-
 
    ```
-   http://localhost:3000
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   
+5. Open in browser-
+
+   ```
+   http://localhost:5173
    ```
 
 ---
 
-## How It Works
+### How It Works:
 
-* The server is built using Express.js
-* Routes handle different user requests
-* Controllers manage business logic
-* Frontend interacts with backend via APIs
+* Backend provides REST APIs using Express.js
+* MongoDB stores users & tasks
+* Middleware handles authentication & file uploads
+* Frontend (React) consumes APIs using Axios
+* Context API manages global user state
+* Charts display analytics data visually
+---
+
+### Learning Outcomes:
+
+* Built a complete MERN stack project
+* Learned authentication & authorization
+* Understood scalable folder structure
+* Improved API handling & state management
+* Worked with charts & dashboards
 
 ---
 
-## Learning Outcomes
+### Acknowledgement:
 
-* Learned how routing works in backend
-* Understood project structure in real apps
-* Improved debugging and development workflow
-
----
-
-## Acknowledgement
-
-This project is for educational purposes.
+This project was built as part of learning full-stack development and improving real-world project structuring skills.
