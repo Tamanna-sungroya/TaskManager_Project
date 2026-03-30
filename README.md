@@ -23,6 +23,7 @@ A full-stack task management application designed to help teams collaborate, tra
 * Frontend: React.js(Vite), Tailwind CSS    
 * Backend: Node.js, Express.js
 * Database: MongoDB Atlas
+* Others: Mongoose (ODM), JWT Authentication
 
 ---
 
@@ -154,14 +155,28 @@ TASK_MANAGER/
 2. Install dependencies-
 
    ```
-   npm install
+   nvm install 22
+   nvm use 22
    ```
    
 3. Backend Setup-
 
    ```
    cd backend
+   npm init -y
    npm install
+   ```
+
+   Create `.env` file: -
+   ```
+   PORT=5000
+   MONGO_URI=your_mongodb_uri
+   JWT_SECRET=your_secret_key
+   ADMIN_INVITE_TOKEN=your_admin_token
+   ```
+
+   Run backend: -
+   ```
    npm start
    ```
    
@@ -169,11 +184,18 @@ TASK_MANAGER/
 
    ```
    cd frontend
+   cd Task-Manager
+   npm create vite@latest
    npm install
+   ```
+
+   Run Frontend: -
+
+   ```
    npm run dev
    ```
    
-5. Open in browser-
+6. Open in browser-
 
    ```
    http://localhost:5173
