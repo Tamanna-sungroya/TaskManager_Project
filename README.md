@@ -1,5 +1,3 @@
-# Project Name
-
 ## TaskForge - Task Management System
 
 A full-stack task management application designed to help teams collaborate, track progress, and manage tasks efficiently.
