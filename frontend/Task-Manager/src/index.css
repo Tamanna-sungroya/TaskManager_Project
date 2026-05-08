@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
 
+/* enable class based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
     --font-display: 'Poppins', sans-serif;
     --breakpoint-3xl: 1920px;
@@ -13,14 +16,20 @@
     }
 
     body {
-        background-color: #fcfbfc;
+        @apply bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
         overflow-x: hidden;
         transition: background-color 0.25s ease, color 0.25s ease;
     }
-    .dark body {
+
+    /* body {
+        background-color: #fcfbfc;
+        overflow-x: hidden;
+        transition: background-color 0.25s ease, color 0.25s ease;
+    } */
+    /* .dark body {
         background-color: #18181b;
         color: #f3f4f6;
-    }
+    } */
 }
 
 .input-box {
@@ -30,7 +39,6 @@
 .btn-primary {
     @apply w-full text-sm font-medium text-white bg-primary shadow-lg shadow-purple-600/5 p-[10px] rounded-md my-1 hover:bg-blue-600/15 hover:text-blue-600 cursor-pointer;
 }
-
 
 .card{
     @apply bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md shadow-gray-100 dark:shadow-gray-900 border border-gray-200/50 dark:border-gray-700 text-black dark:text-gray-100;
@@ -59,8 +67,6 @@
 .download-btn{
     @apply items-center gap-3 text-xs md:text-[13px] text-lime-900 bg-lime-100 px-2 md:px-3 py-2 rounded border border-lime-200 hover:border-lime-400 cursor-pointer;
 }
-
-
 
 
 /* Hide browser default password eye icon */

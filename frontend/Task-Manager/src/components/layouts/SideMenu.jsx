@@ -34,7 +34,7 @@ const SideMenu = ({ activeMenu }) => {
         return () => {};
     }, [user]);
 
-    return <div className="w-64 h-[calc(100vh-61px)] bg-white border-r border-gray-200/50 sticky top-[61px] z-20">
+    return <div className="w-64 h-[calc(100vh-61px)] bg-white dark:bg-gray-900 border-r border-gray-200/50 dark:border-gray-700 sticky top-[61px] z-20">
         <div className="flex flex-col items-center justify-center mb-7 pt-5">
             <ProfilePhotoSelector
                 currentImage={user?.profileImageUrl || ''}
@@ -63,11 +63,11 @@ const SideMenu = ({ activeMenu }) => {
                 </div>
             )}
 
-            <h5 className="text-gray-950 font-medium leading-6 mt-3">
+            <h5 className="text-gray-950 dark:text-white font-medium leading-6 mt-3">
                 {user?.name || ""}
             </h5>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-gray-500 dark:text-gray-400">
                 {user?.email || ""}
             </p>
         </div>
@@ -75,7 +75,7 @@ const SideMenu = ({ activeMenu }) => {
         {sideMenuData.map((item, index) => (
             <button
             key={`menu_${index}`}
-            className={`w-full flex items-center gap-4 text-[15px] ${
+            className={`w-full flex items-center gap-4 text-[15px] text-gray-700 dark:text-gray-200 ${
                 activeMenu == item.label 
                 ? "text-primary bg-linear-to-r from-blue-50/40 to-blue-100/50 border-r-3" 
                 : ""

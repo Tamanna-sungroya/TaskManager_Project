@@ -9,7 +9,7 @@ const Navbar = ({activeMenu}) => {
     return (
         <div className="flex gap-5 items-center bg-white dark:bg-gray-900 border border-b border-gray-200/50 dark:border-gray-800 backdrop-blur-[2px] py-4 px-7 sticky top-0 z-30">
             <button
-            className="block lg:hidden text-black"
+            className="block lg:hidden text-black dark:text-white"
             onClick={() => {
                 setOpenSideMenu(!openSideMenu);
             }}
@@ -32,7 +32,7 @@ const Navbar = ({activeMenu}) => {
             </div>
 
             {openSideMenu && (
-                <div className="fixed top-[61px] -ml-4 bg-white">
+                <div className="fixed top-[61px] -ml-4 bg-white dark:bg-gray-900">
                     <SideMenu activeMenu={activeMenu} />
                 </div>
             )}
