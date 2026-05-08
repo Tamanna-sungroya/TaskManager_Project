@@ -1,0 +1,37 @@
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+
+//Middleware to protect routes
+const protect = async (req, res, next) => {
+    try {
+        let token = req.headers.authorization;
+
+        if(token && token.startsWith("Bearer")) {
+            token = token.split(" ")[1];  //Extract token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = await User.findOne({ _id: decoded.id, deletedAt: null }).select("-password");
+            if (!req.user) {
+                return res.status(401).json({ message: "User no longer exists" });
+            }
+            next();
+        }
+        else{
+            res.status(401).json({ message: "Not authorized, no token" });
+        }
+    }
+    catch(error){
+        res.status(401).json({ message: "Token failed", error: error.message });
+    }
+};
+
+//Middleware for Admin-only access
+const adminOnly = (req, res, next) => {
+    if(req.user && req.user.role === "admin"){
+        next();
+    }
+    else{
+        res.status(403).json({ message: "Access denied, admin only" });
+    }
+};
+
+module.exports = { protect, adminOnly };
