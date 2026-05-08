@@ -19,6 +19,7 @@ TaskForge goes beyond a traditional task manager by integrating **AI guidance**,
 * Email notifications & reminders
 * File/Image uploads
 * Dashboard analytics & charts
+* Admin report generation & Excel export (.xlsx)
 * Dark / Light Mode Toggle
 * Responsive modern UI
 
@@ -87,6 +88,16 @@ TaskForge goes beyond a traditional task manager by integrating **AI guidance**,
 * Mobile responsive design
 * Improved accessibility & usability
 * Modern productivity-focused interface
+
+---
+
+### 📊 Reporting & Analytics
+
+* Admin dashboard provides organization-wide insights
+* Generates productivity & task analytics reports
+* Admin can download reports as Excel sheets (.xlsx)
+* Helps teams track performance, deadlines, and completion trends
+* Designed for real-world managerial reporting workflows
 
 ---
 
@@ -308,6 +319,7 @@ TASK_MANAGER_PROJECT/
 ### 📊 Report Routes
 
 * `GET /api/reports` → Get analytics/report data
+* `GET /api/reports/export` → Download report as Excel file (.xlsx)
 
 ---
 
