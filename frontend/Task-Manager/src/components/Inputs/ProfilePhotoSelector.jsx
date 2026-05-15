@@ -5,6 +5,13 @@ const ProfilePhotoSelector = ({ currentImage, onImageChange }) => {
     const inputRef = useRef(null);
     const [previewUrl, setPreviewUrl] = useState(null);
 
+    React.useEffect(() => {
+        console.log('📸 ProfilePhotoSelector received currentImage:', currentImage);
+        console.log('📸 currentImage type:', typeof currentImage);
+        console.log('📸 currentImage length:', currentImage?.length);
+        console.log('📸 previewUrl:', previewUrl);
+    }, [currentImage, previewUrl]);
+
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -32,6 +39,13 @@ const ProfilePhotoSelector = ({ currentImage, onImageChange }) => {
                         src={previewUrl || currentImage}
                         alt="profile"
                         className="w-20 h-20 rounded-full object-cover bg-blue-100/50"
+                        onError={(e) => {
+                            console.error('❌ Image failed to load:', previewUrl || currentImage);
+                            console.error('Image error event:', e);
+                        }}
+                        onLoad={() => {
+                            console.log('✅ Image loaded successfully:', previewUrl || currentImage);
+                        }}
                     />
                 ) : (
                     <div className="w-20 h-20 rounded-full bg-blue-100/60 flex items-center justify-center">

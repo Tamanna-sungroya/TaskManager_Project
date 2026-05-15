@@ -8,6 +8,8 @@ import { API_PATHS } from '../../utils/apiPaths';
 import KanbanBoard from '../../components/KanbanBoard';
 import ForgeAssistant from '../../components/ForgeAssistant';
 import toast from 'react-hot-toast';
+import { IoChatbubbleEllipses } from 'react-icons/io5';
+import taskEventManager, { TASK_EVENTS } from '../../utils/eventManager';
 
 const MyTasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,6 +17,12 @@ const MyTasks = () => {
   const [tabs, setTabs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showChat, setShowChat] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { role: "assistant", text: "Hi, I am Forge AI. Ask me to plan your day." }
+  ]);
+  const [chatQuery, setChatQuery] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchTasks = async () => {
@@ -63,9 +71,32 @@ const MyTasks = () => {
     try {
       await axiosInstance.put(API_PATHS.TASKS.UPDATE_TASK_STATUS(taskId), { status });
       toast.success('Task status updated');
+      // Emit event for cross-component synchronization
+      taskEventManager.emit(TASK_EVENTS.TASK_STATUS_CHANGED, { taskId, status });
+      // Refresh tasks to ensure all components have latest data
+      fetchTasks();
     } catch (e) {
       setTasks(previous);
       toast.error('Could not move task');
+    }
+  };
+
+  const handleChatSend = async () => {
+    if (!chatQuery.trim()) return;
+    
+    const userMessage = { role: "user", text: chatQuery };
+    setChatMessages((m) => [...m, userMessage]);
+    setChatQuery("");
+    setChatLoading(true);
+    
+    try {
+      const response = await axiosInstance.post(API_PATHS.AI.ASK, { query: userMessage.text });
+      const assistantMessage = { role: "assistant", text: response.data.response };
+      setChatMessages((m) => [...m, assistantMessage]);
+    } catch (error) {
+      setChatMessages((m) => [...m, { role: "assistant", text: "Could not generate advice right now." }]);
+    } finally {
+      setChatLoading(false);
     }
   };
 
@@ -89,32 +120,66 @@ const MyTasks = () => {
           <div className="p-4 text-gray-500">No tasks found. Please check back later.</div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {tasks.map((task) => (
-            <TaskCard
-              key={task._id}
-              title={task.title}
-              description={task.description}
-              priority={task.priority}
-              status={task.status}
-              progress={task.progress}
-              createdAt={task.createdAt}
-              dueDate={task.dueDate}
-              assignedTo={task.assignedTo?.map((user) => user.profileImageUrl)}
-              attachmentCount={task.attachments?.length || 0}
-              completedTodoCount={task.completedTodoCount || 0}
-              todoChecklist={task.todoChecklist || []}
-              onClick={() => handleTaskClick(task)}
-            />
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-2">Kanban Board</h3>
+        {/* Full Kanban Board as main view */}
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold mb-4">Kanban Board</h3>
           <KanbanBoard tasks={tasks} onMove={handleKanbanMove} />
         </div>
 
-        <ForgeAssistant />
+        {/* Floating Chat Icon */}
+        <button
+          onClick={() => setShowChat(!showChat)}
+          className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
+          aria-label="Toggle Chat"
+        >
+          <IoChatbubbleEllipses size={24} />
+        </button>
+
+        {/* Chat Assistant - Conditionally Rendered */}
+        {showChat && (
+          <div className="fixed bottom-20 right-6 z-40 w-80 max-h-96 bg-white rounded-lg shadow-xl border border-gray-200">
+            <div className="p-4">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold">Forge AI Assistant</h3>
+                <button
+                  onClick={() => setShowChat(false)}
+                  className="text-gray-400 hover:text-gray-600 text-xl"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="space-y-2 max-h-64 overflow-auto mb-3">
+                {chatMessages.map((m, idx) => (
+                  <div key={idx} className={`p-2 rounded ${m.role === "assistant" ? "bg-blue-50" : "bg-gray-100"}`}>
+                    <p className="text-sm">{m.text}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input 
+                  type="text"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  value={chatQuery}
+                  onChange={(e) => setChatQuery(e.target.value)}
+                  placeholder="What should I do now?" 
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleChatSend();
+                    }
+                  }}
+                />
+                <button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors" 
+                  onClick={handleChatSend}
+                  disabled={chatLoading}
+                >
+                  {chatLoading ? "..." : "Send"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </DashboardLayout>
   );

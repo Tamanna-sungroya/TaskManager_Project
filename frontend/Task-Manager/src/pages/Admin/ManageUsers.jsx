@@ -3,11 +3,13 @@ import DashboardLayout from '../../components/layouts/DashboardLayout';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import toast from 'react-hot-toast';
+import { LuPlus } from 'react-icons/lu';
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const pageSize = 6;
 
   const getAllUsers = async () => {
@@ -59,52 +61,58 @@ const ManageUsers = () => {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {users
-            .filter((u) => [u.name, u.email].join(' ').toLowerCase().includes(query.toLowerCase()))
-            .slice((page - 1) * pageSize, page * pageSize)
-            .map((user) => (
-            <div key={user._id} className="bg-white p-4 rounded-lg shadow">
-              <div className="flex items-center gap-3">
-                <img 
-                  src={user.profileImageUrl || '/default-avatar.png'} 
-                  alt={user.name} 
-                  className="w-10 h-10 rounded-full"
-                />
-                <div>
-                  <h3 className="font-medium">{user.name}</h3>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                  <p className="text-xs text-gray-400 capitalize">{user.role}</p>
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {users
+              .filter((u) => [u.name, u.email].join(' ').toLowerCase().includes(query.toLowerCase()))
+              .slice((page - 1) * pageSize, page * pageSize)
+              .map((user) => (
+                <div key={user._id} className="bg-white p-4 rounded-lg shadow">
+                  <div className="flex items-center gap-3">
+                    <img 
+                      src={user.profileImageUrl || '/default-avatar.png'} 
+                      alt={user.name} 
+                      className="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <h3 className="font-medium">{user.name}</h3>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <p className="text-xs text-gray-400 capitalize">{user.role}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      className="card-btn"
+                      onClick={async () => {
+                        const name = prompt('Update name', user.name);
+                        if (!name) return;
+                        await axiosInstance.put(API_PATHS.USERS.UPDATE_USER(user._id), { name });
+                        toast.success("User updated");
+                        getAllUsers();
+                      }}
+                    >
+                      Update
+                    </button>
+                    <button
+                      className="card-btn"
+                      onClick={async () => {
+                        if (!confirm('Delete this user?')) return;
+                        await axiosInstance.delete(API_PATHS.USERS.DELETE_USER(user._id));
+                        toast.success("User deleted");
+                        getAllUsers();
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-3 flex gap-2">
-                <button
-                  className="card-btn"
-                  onClick={async () => {
-                    const name = prompt('Update name', user.name);
-                    if (!name) return;
-                    await axiosInstance.put(API_PATHS.USERS.UPDATE_USER(user._id), { name });
-                    toast.success("User updated");
-                    getAllUsers();
-                  }}
-                >
-                  Update
-                </button>
-                <button
-                  className="card-btn"
-                  onClick={async () => {
-                    if (!confirm('Delete this user?')) return;
-                    await axiosInstance.delete(API_PATHS.USERS.DELETE_USER(user._id));
-                    toast.success("User deleted");
-                    getAllUsers();
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+              ))}
+          </div>
+        )}
 
         <div className="flex items-center justify-end gap-3 mt-4">
           <button className="card-btn" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>

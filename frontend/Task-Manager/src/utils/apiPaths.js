@@ -6,6 +6,7 @@ export const API_PATHS = {
         REGISTER: "/api/auth/register",  //Register a new user (Admin or Member)
         LOGIN: "/api/auth/login",  //Authenticate user & return JWT token
         GET_PROFILE: "/api/auth/profile",  //Get logged-in user details
+        UPDATE_PROFILE: "/api/auth/profile",  //Update logged-in user details
         GOOGLE_LOGIN: "/api/auth/google",
         SEND_REGISTER_OTP: "/api/auth/register/otp/send",
         VERIFY_REGISTER_OTP: "/api/auth/register/otp/verify",

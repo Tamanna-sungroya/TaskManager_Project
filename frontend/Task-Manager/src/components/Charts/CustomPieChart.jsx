@@ -10,12 +10,21 @@ import {
 import CustomTooltip from './CustomTooltip';
 import CustomLegend from './CustomLegend';
 
-const CustomPieChart = ({data, colors}) => {
+const CustomPieChart = ({data = [], colors = ["#8D51FF", "#00B8DB", "#7BCE00"]}) => {
+    // Validate and sanitize data
+    const validData = Array.isArray(data) 
+        ? data.filter(item => item && !isNaN(item.count) && isFinite(item.count))
+        : [];
+    
+    const chartData = validData.length > 0 ? validData : [
+        { status: "No Data", count: 0 }
+    ];
+    
     return (
         <ResponsiveContainer width="100%" height={325}>
             <PieChart>
                 <Pie
-                data={data}
+                data={chartData}
                 dataKey="count"
                 nameKey="status"
                 cx="50%"
@@ -24,7 +33,7 @@ const CustomPieChart = ({data, colors}) => {
                 innerRadius={100}
                 labelLine={false}
                 >
-                    {data.map((entry, index) => (
+                    {chartData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                     ))}
                 </Pie>

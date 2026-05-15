@@ -5,9 +5,10 @@ import { API_PATHS } from '../../utils/apiPaths';
 import { UserContext } from '../../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import { SIDE_MENU_DATA, SIDE_MENU_USER_DATA } from '../../utils/data';
+import toast from 'react-hot-toast';
 
 const SideMenu = ({ activeMenu }) => {
-    const { user, clearUser } = useContext(UserContext);
+    const { user, updateUser, clearUser } = useContext(UserContext);
     const [sideMenuData, setSideMenuData] = useState([]);
 
     const navigate = useNavigate();
@@ -40,19 +41,87 @@ const SideMenu = ({ activeMenu }) => {
                 currentImage={user?.profileImageUrl || ''}
                 onImageChange={async (file) => {
                     if (!file) return;
+                    console.log('=== PROFILE UPLOAD STARTED ===');
+                    console.log('File selected:', file.name, file.size);
+                    
                     // 1. Upload image
                     const formData = new FormData();
                     formData.append('image', file);
                     try {
+                        console.log('Uploading image to:', API_PATHS.IMAGE.UPLOAD_IMAGE);
                         const uploadRes = await axiosInstance.post(API_PATHS.IMAGE.UPLOAD_IMAGE, formData, {
                             headers: { 'Content-Type': 'multipart/form-data' },
                         });
                         const imageUrl = uploadRes.data.imageUrl;
-                        // 2. Update user profile
-                        await axiosInstance.put(API_PATHS.AUTH.GET_PROFILE, { profileImageUrl: imageUrl });
-                        window.location.reload(); // reload to update context/profile
+                        console.log('Image uploaded successfully. Server response:', uploadRes.data);
+                        console.log('Image URL from server:', imageUrl);
+                        console.log('Image URL type:', typeof imageUrl);
+                        
+                        // 2. Update user profile with the image URL
+                        console.log('=== UPDATING PROFILE ===');
+                        console.log('Sending profileImageUrl:', imageUrl);
+                        const profileRes = await axiosInstance.put(API_PATHS.AUTH.UPDATE_PROFILE, { profileImageUrl: imageUrl });
+                        console.log('Full profile update response:', profileRes.data);
+                        console.log('Response status:', profileRes.status);
+                        
+                        if (profileRes.status === 200) {
+                            // Create updated user object with all fields
+                            const updatedUser = {
+                                ...user,
+                                ...profileRes.data,
+                                profileImageUrl: imageUrl  // Override with the actual uploaded URL
+                            };
+                            console.log('=== USER STATE UPDATE ===');
+                            console.log('Current user state:', user);
+                            console.log('Backend response data:', profileRes.data);
+                            console.log('Updated user object to save:', updatedUser);
+                            console.log('Updated user profileImageUrl:', updatedUser.profileImageUrl);
+                            
+                            // Update context (which updates localStorage)
+                            updateUser(updatedUser);
+                            
+                            // VERIFICATION: Fetch profile again to confirm backend has it
+                            setTimeout(async () => {
+                                try {
+                                    console.log('=== VERIFICATION: Fetching profile again ===');
+                                    const verifyRes = await axiosInstance.get(API_PATHS.AUTH.GET_PROFILE);
+                                    console.log('Verification fetch response:', verifyRes.data);
+                                    console.log('Verification profileImageUrl:', verifyRes.data?.profileImageUrl);
+                                    if (verifyRes.data?.profileImageUrl === imageUrl) {
+                                        console.log('✓ VERIFIED: Backend has correct profileImageUrl');
+                                    } else {
+                                        console.error('✗ MISMATCH: Backend profileImageUrl is different!');
+                                        console.error('Expected:', imageUrl);
+                                        console.error('Got:', verifyRes.data?.profileImageUrl);
+                                    }
+                                } catch (verifyErr) {
+                                    console.error('Verification fetch failed:', verifyErr);
+                                }
+                            }, 1000);
+                            
+                            // Verify immediately after update
+                            setTimeout(() => {
+                                const cachedData = localStorage.getItem('userData');
+                                console.log('=== IMMEDIATE VERIFICATION ===');
+                                console.log('localStorage userData:', cachedData);
+                                if (cachedData) {
+                                    const parsed = JSON.parse(cachedData);
+                                    console.log('Parsed userData:', parsed);
+                                    console.log('Cached profileImageUrl:', parsed?.profileImageUrl);
+                                }
+                            }, 100);
+                            
+                            toast.success('Profile image updated successfully!');
+                        } else {
+                            console.error('Profile update failed with status:', profileRes.status);
+                            toast.error('Failed to update profile: Server error');
+                        }
                     } catch (err) {
-                        alert('Failed to update profile image');
+                        console.error('=== PROFILE UPLOAD ERROR ===');
+                        console.error('Error:', err.message);
+                        console.error('Error response:', err.response?.data);
+                        console.error('Error status:', err.response?.status);
+                        toast.error('Failed to update profile image: ' + (err.response?.data?.message || err.message));
                     }
                 }}
             />

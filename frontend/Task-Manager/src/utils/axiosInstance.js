@@ -4,6 +4,7 @@ import { BASE_URL } from "./apiPaths";
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
     timeout: 10000,
+    withCredentials: true, // Include credentials in CORS requests
     headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

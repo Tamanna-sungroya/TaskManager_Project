@@ -36,24 +36,49 @@ const Dashboard = () => {
 
   //Prepare Chart Data
   const prepareChartData = (data) => {
-    const taskDistribution = data?.taskDistribution || null;
-    const taskPriorityLevels = data?.taskPriorityLevels || null;
+    try {
+      const taskDistribution = data?.taskDistribution || {};
+      const taskPriorityLevels = data?.taskPriorityLevels || {};
 
-    const taskDistributionData = [
-      { status: "Pending", count: taskDistribution?.Pending || 0 },
-      { status: "In Progress", count: taskDistribution?.InProgress || 0 },
-      { status: "Completed", count: taskDistribution?.Completed || 0 },
-    ];
+      // Validate and sanitize distribution data
+      const taskDistributionData = [
+        { status: "Pending", count: Math.max(0, parseInt(taskDistribution?.Pending) || 0) },
+        { status: "In Progress", count: Math.max(0, parseInt(taskDistribution?.InProgress) || 0) },
+        { status: "Completed", count: Math.max(0, parseInt(taskDistribution?.Completed) || 0) },
+      ].filter(item => !isNaN(item.count) && isFinite(item.count));
 
-    setPieChartData(taskDistributionData);
+      setPieChartData(taskDistributionData.length > 0 ? taskDistributionData : [
+        { status: "Pending", count: 0 },
+        { status: "In Progress", count: 0 },
+        { status: "Completed", count: 0 },
+      ]);
 
-    const PriorityLevelData = [
-      { priority: "Low", count: taskPriorityLevels?.Low || 0 },
-      { priority: "Medium", count: taskPriorityLevels?.Medium || 0 },
-      { priority: "High", count: taskPriorityLevels?.High || 0 },
-    ];
+      // Validate and sanitize priority data
+      const PriorityLevelData = [
+        { priority: "Low", count: Math.max(0, parseInt(taskPriorityLevels?.Low) || 0) },
+        { priority: "Medium", count: Math.max(0, parseInt(taskPriorityLevels?.Medium) || 0) },
+        { priority: "High", count: Math.max(0, parseInt(taskPriorityLevels?.High) || 0) },
+      ].filter(item => !isNaN(item.count) && isFinite(item.count));
 
-    setBarChartData(PriorityLevelData);
+      setBarChartData(PriorityLevelData.length > 0 ? PriorityLevelData : [
+        { priority: "Low", count: 0 },
+        { priority: "Medium", count: 0 },
+        { priority: "High", count: 0 },
+      ]);
+    } catch (error) {
+      console.error("Error preparing chart data:", error);
+      // Set default data on error
+      setPieChartData([
+        { status: "Pending", count: 0 },
+        { status: "In Progress", count: 0 },
+        { status: "Completed", count: 0 },
+      ]);
+      setBarChartData([
+        { priority: "Low", count: 0 },
+        { priority: "Medium", count: 0 },
+        { priority: "High", count: 0 },
+      ]);
+    }
   };
 
   const getDashboardData = async () => {

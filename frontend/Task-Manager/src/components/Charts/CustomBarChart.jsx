@@ -11,7 +11,18 @@ import {
     Cell,
 } from "recharts";
 
-const CustomBarChart = ({data}) => {
+const CustomBarChart = ({data = []}) => {
+    // Validate and sanitize data
+    const validData = Array.isArray(data)
+        ? data.filter(item => item && !isNaN(item.count) && isFinite(item.count))
+        : [];
+    
+    const chartData = validData.length > 0 ? validData : [
+        { priority: "Low", count: 0 },
+        { priority: "Medium", count: 0 },
+        { priority: "High", count: 0 },
+    ];
+
     //Function to alternate colors
     const getBarColor = (entry) => {
         switch (entry?.priority) {
@@ -51,7 +62,7 @@ const CustomBarChart = ({data}) => {
     return (
         <div className="bg-white mt-6">
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data}>
+                <BarChart data={chartData}>
                     <CartesianGrid stroke="none" />
 
                     <XAxis
@@ -75,7 +86,7 @@ const CustomBarChart = ({data}) => {
                     activeDot={{ r: 8, fill: "yellow" }}
                     activeStyle={{ fill: "green" }}
                     >
-                        {data.map((entry, index) => (
+                        {chartData.map((entry, index) => (
                             <Cell key={index} fill={getBarColor(entry)} />
                         ))}
                     </Bar>

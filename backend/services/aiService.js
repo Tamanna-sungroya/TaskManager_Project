@@ -1,5 +1,16 @@
 const OpenAI = require("openai");
 
+const getOpenRouterClient = () => {
+    return new OpenAI({
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: "https://openrouter.ai/api/v1",
+        defaultHeaders: {
+            "HTTP-Referer": process.env.CLIENT_URL || "http://localhost:5173",
+            "X-Title": "TaskForge",
+        },
+    });
+};
+
 const getPriorityWeight = (priority) => {
     if (priority === "High") return 4;
     if (priority === "Medium") return 2;
@@ -34,30 +45,46 @@ const buildContext = (tasks) =>
 const generateAdvice = async ({ query, tasks }) => {
     const rankedTasks = buildContext(tasks);
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.OPENROUTER_API_KEY) {
         return {
             rankedTasks,
             advice: `Start with "${rankedTasks[0]?.title || "your highest priority pending task"}", then batch similar medium-priority items. You are ${rankedTasks.length > 5 ? "carrying a high workload; time-blocking is recommended." : "on manageable workload."}`,
         };
     }
+    
+    try {
+        const openRouter = getOpenRouterClient();
+        const systemPrompt = "You are Forge AI Assistant. Give practical productivity advice, include concrete next 3 actions.";
+        const userMessage = `User Query: ${query}\n\nYour ranked tasks (by priority and urgency):\n${JSON.stringify(rankedTasks, null, 2)}`;
 
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const prompt = {
-        userQuery: query,
-        rankedTasks,
-        instructions:
-            "You are Forge AI Assistant. Give practical productivity advice, include concrete next 3 actions.",
-    };
+        const response = await openRouter.chat.completions.create({
+            model: process.env.OPENROUTER_MODEL || "gpt-3.5-turbo",
+            messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userMessage }
+            ],
+            max_tokens: 500,
+            temperature: 0.7,
+        });
 
-    const response = await client.responses.create({
-        model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
-        input: JSON.stringify(prompt),
-    });
+        const advice = response.choices[0]?.message?.content;
+        
+        if (!advice) {
+            throw new Error("No content in OpenRouter response");
+        }
 
-    return {
-        rankedTasks,
-        advice: response.output_text || "No advice generated.",
-    };
+        return {
+            rankedTasks,
+            advice,
+        };
+    } catch (error) {
+        console.error("OpenRouter API Error:", error.message);
+        // Fallback to basic advice if API fails
+        return {
+            rankedTasks,
+            advice: `Start with "${rankedTasks[0]?.title || "your highest priority pending task"}", then batch similar medium-priority items. You are ${rankedTasks.length > 5 ? "carrying a high workload; time-blocking is recommended." : "on manageable workload."}`,
+        };
+    }
 };
 
 module.exports = { generateAdvice, scoreTask };

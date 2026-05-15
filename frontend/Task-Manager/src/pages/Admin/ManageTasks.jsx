@@ -6,6 +6,7 @@ import { API_PATHS } from '../../utils/apiPaths';
 import { LuFileSpreadsheet } from 'react-icons/lu';
 import TaskStatusTabs from '../../components/TaskStatusTabs';
 import TaskCard from '../../components/Cards/TaskCard';
+import taskEventManager, { TASK_EVENTS } from '../../utils/eventManager';
 
 const ManageTasks = () => {
   const [allTasks, setAllTasks] = useState([]);
@@ -65,6 +66,28 @@ const ManageTasks = () => {
   useEffect(() => {
     getAllTasks(filterStatus);
     return () => {};
+  }, [filterStatus]);
+
+  // Listen for task updates from other components
+  useEffect(() => {
+    const handleTaskUpdate = (data) => {
+      // Refresh tasks when any task is updated
+      getAllTasks(filterStatus);
+    };
+
+    // Subscribe to task events
+    taskEventManager.subscribe(TASK_EVENTS.TASK_STATUS_CHANGED, handleTaskUpdate);
+    taskEventManager.subscribe(TASK_EVENTS.TASK_UPDATED, handleTaskUpdate);
+    taskEventManager.subscribe(TASK_EVENTS.TASK_CREATED, handleTaskUpdate);
+    taskEventManager.subscribe(TASK_EVENTS.TASK_DELETED, handleTaskUpdate);
+
+    // Cleanup subscription
+    return () => {
+      taskEventManager.unsubscribe(TASK_EVENTS.TASK_STATUS_CHANGED, handleTaskUpdate);
+      taskEventManager.unsubscribe(TASK_EVENTS.TASK_UPDATED, handleTaskUpdate);
+      taskEventManager.unsubscribe(TASK_EVENTS.TASK_CREATED, handleTaskUpdate);
+      taskEventManager.unsubscribe(TASK_EVENTS.TASK_DELETED, handleTaskUpdate);
+    };
   }, [filterStatus]);
 
   return (

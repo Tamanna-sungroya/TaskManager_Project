@@ -27,12 +27,45 @@ router.post("/google", googleLogin);
 router.get("/profile", protect, getUserProfile);  //Get User Profile
 router.put("/profile", protect, updateUserProfile);  //Update User Profile
 
+// DEBUG endpoint to check what's in database
+router.get("/profile/debug/:userId", async (req, res) => {
+    try {
+        const User = require("../models/User");
+        const user = await User.findById(req.params.userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        console.log('=== DEBUG: Raw user from DB ===');
+        console.log('User object:', user);
+        console.log('ProfileImageUrl field:', user.profileImageUrl);
+        console.log('User._doc:', user._doc);
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            profileImageUrl: user.profileImageUrl,
+            profileImageUrlRaw: user._doc?.profileImageUrl,
+            allFields: Object.keys(user._doc)
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 router.post("/upload-image", upload.single("image"), (req, res) => {
     if(!req.file){
+        console.log('No file uploaded');
         return res.status(400).json({ message: "No file uploaded" });
     }
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-    res.status(200).json({ imageUrl });
+    const protocol = req.protocol || 'http';
+    const host = req.get("host") || 'localhost:5000';
+    const imageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+    console.log('=== IMAGE UPLOAD ===');
+    console.log('File uploaded:', req.file.filename);
+    console.log('Protocol:', protocol);
+    console.log('Host:', host);
+    console.log('Generated URL:', imageUrl);
+    res.status(200).json({ imageUrl, filename: req.file.filename });
 });
 
 module.exports = router;

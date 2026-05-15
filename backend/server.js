@@ -24,6 +24,7 @@ app.use(
         origin: process.env.CLIENT_URL || "*",
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
         allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true, // Allow credentials
     })
 );
 app.use(helmet());
@@ -51,6 +52,14 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/ai", aiRoutes);
 
 //Serve uploads folder
+// Allow CORS for /uploads (must come BEFORE express.static)
+app.use('/uploads', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+    next();
+});
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(notFound);
 app.use(errorHandler);

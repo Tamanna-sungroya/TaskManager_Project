@@ -213,12 +213,21 @@ const googleLogin = async (req, res) => {
 // @access Private (Requires JWT)
 const getUserProfile = async (req, res) => {
     try{
-        const user = await User.findById(req.user.id).select("-password");
+        console.log('=== GET_PROFILE CALLED ===');
+        console.log('req.user:', req.user);
+        console.log('req.user._id:', req.user._id);
+        console.log('req.user.id:', req.user.id);
+        
+        const user = await User.findById(req.user._id).select("-password");
         if(!user){
+            console.log('User not found for ID:', req.user._id);
             return res.status(404).json({ message: "User not found" });
         }
+        console.log('User found:', user);
+        console.log('User profileImageUrl:', user.profileImageUrl);
         res.json(user);
     } catch(error){
+        console.error('GET_PROFILE error:', error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
@@ -228,29 +237,58 @@ const getUserProfile = async (req, res) => {
 // @access Private (Requires JWT)
 const updateUserProfile = async (req, res) => {
     try{
-        const user = await User.findById(req.user.id);
+        console.log('=== UPDATE_PROFILE CALLED ===');
+        console.log('req.user._id:', req.user._id);
+        console.log('req.body:', req.body);
+        console.log('req.body.profileImageUrl:', req.body.profileImageUrl);
+        
+        const user = await User.findById(req.user._id);
         if(!user){
+            console.log('User not found for ID:', req.user._id);
             return res.status(404).json({ message: "User not found" });
         }
+        console.log('User found before update:', user._id, user.email);
+        console.log('User.profileImageUrl before:', user.profileImageUrl);
+        
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
         if (req.body.profileImageUrl) {
+            console.log('Setting profileImageUrl to:', req.body.profileImageUrl);
             user.profileImageUrl = req.body.profileImageUrl;
+            user.markModified('profileImageUrl');  // Force mongoose to recognize the change
+            console.log('User.profileImageUrl after assignment:', user.profileImageUrl);
         }
         if(req.body.password){
             const salt = await bcrypt.genSalt(10);
             user.password = await bcrypt.hash(req.body.password, salt);
         }
+        
+        console.log('About to save user. Current profileImageUrl:', user.profileImageUrl);
         const updateUser = await user.save();
-        res.json({
+        console.log('User saved successfully');
+        console.log('Updated user object:', updateUser);
+        console.log('User profileImageUrl after save:', updateUser.profileImageUrl);
+        console.log('UpdateUser._doc:', updateUser._doc);
+        
+        // Verify by fetching from DB again
+        const verifyUser = await User.findById(req.user._id);
+        console.log('=== VERIFICATION FETCH ===');
+        console.log('Verified user profileImageUrl from DB:', verifyUser.profileImageUrl);
+        
+        const responseData = {
             _id: updateUser._id,
             name: updateUser.name,
             email: updateUser.email,
             role: updateUser.role,
             profileImageUrl: updateUser.profileImageUrl,
             token: generateToken(updateUser._id),
-        });
+        };
+        console.log('Response being sent:', responseData);
+        console.log('Response profileImageUrl:', responseData.profileImageUrl);
+        res.json(responseData);
     } catch(error){
+        console.error('UPDATE_PROFILE error:', error);
+        console.error('Error stack:', error.stack);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
