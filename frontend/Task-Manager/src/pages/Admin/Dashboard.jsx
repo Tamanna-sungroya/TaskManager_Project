@@ -134,11 +134,10 @@ const Dashboard = () => {
         )}
         color="bg-violet-500"
         />
-
         <InfoCard
         label="In Progress Tasks"
         value={addThousandsSeparator(
-          dashboardData?.charts?.taskDistribution?.Inprogress || 0
+          dashboardData?.charts?.taskDistribution?.InProgress || 0
         )}
         color="bg-cyan-500"
         />
@@ -167,7 +166,7 @@ const Dashboard = () => {
 
         </div>
       </div>
-
+              
       <div>
         <div className="card">
           <div className="flex items-center justify-between">

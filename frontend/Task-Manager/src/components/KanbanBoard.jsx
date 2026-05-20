@@ -13,7 +13,7 @@ const TaskItem = ({ task }) => {
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="card p-4 cursor-grab hover:shadow-md transition-shadow">
       {/* Header with title and priority */}
       <div className="flex justify-between items-start mb-3">
-        <h4 className="font-medium text-sm text-gray-800 flex-1 pr-2">{task.title}</h4>
+        <h4 className="font-medium text-sm text-gray-900 dark:text-white flex-1 pr-2">{task.title}</h4>
         <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded whitespace-nowrap">
           {task.priority}
         </span>
@@ -21,7 +21,7 @@ const TaskItem = ({ task }) => {
       
       {/* Description */}
       {task.description && (
-        <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+        <p className="text-xs text-gray-900 dark:text-white mb-3 line-clamp-2">
           {task.description}
         </p>
       )}
@@ -29,7 +29,7 @@ const TaskItem = ({ task }) => {
       {/* Assigned Users Section */}
       {task.assignedTo && task.assignedTo.length > 0 && (
         <div className="mb-3">
-          <div className="text-xs text-gray-500 mb-2 font-medium">Assigned to:</div>
+          <div className="text-xs text-gray-900 dark:text-white mb-2 font-medium">Assigned to:</div>
           <div className="flex flex-wrap gap-1">
             {task.assignedTo.slice(0, 4).map((user, idx) => (
               <div key={idx} className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-lg">
