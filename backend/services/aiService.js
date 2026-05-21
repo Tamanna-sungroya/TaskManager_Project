@@ -58,7 +58,7 @@ const generateAdvice = async ({ query, tasks }) => {
         const userMessage = `User Query: ${query}\n\nYour ranked tasks (by priority and urgency):\n${JSON.stringify(rankedTasks, null, 2)}`;
 
         const response = await openRouter.chat.completions.create({
-            model: process.env.OPENROUTER_MODEL || "gpt-3.5-turbo",
+            model: process.env.OPENROUTER_MODEL || "openai/gpt-4o-mini",
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userMessage }

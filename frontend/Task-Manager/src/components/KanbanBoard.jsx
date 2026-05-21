@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { DndContext, closestCenter, useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { LuPaperclip } from "react-icons/lu";
 
 const statuses = ["Pending", "In Progress", "Completed"];
 
@@ -55,9 +56,10 @@ const TaskItem = ({ task }) => {
       <div className="flex justify-between items-center gap-3">
         {task.attachments && task.attachments.length > 0 && (
           <div className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {/* <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 00-.586.586l1.414 1.414a2 2 0 00.586.586L15.172 17M5 12a2 2 0 110-4 0 4 0 110-4 0z" />
-            </svg>
+            </svg> */}
+            <LuPaperclip className="w-4 h-4 text-gray-500" />
             <span className="text-xs text-gray-600 font-medium">{task.attachments.length}</span>
           </div>
         )}
