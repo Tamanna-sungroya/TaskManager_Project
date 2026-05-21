@@ -140,7 +140,7 @@ TaskForge goes beyond a traditional task manager by integrating **AI guidance**,
 
 ### AI & Automation
 
-* OpenAI API (Forge AI Assistant)
+* OpenRouter API (Forge AI Assistant)
 * Streaming AI Responses
 * Nodemailer (Email Notifications & OTP System)
 
@@ -193,12 +193,12 @@ TASK_MANAGER_PROJECT/
 │   │   ├── otpService.js
 │   │   └── reminderService.js
 │   │
+│   ├── uploads/
+│   │
 │   ├── utils/
 │   │   ├── apiResponse.js
 │   │   ├── appError.js
 │   │   └── asyncHandler.js
-│   │
-│   ├── uploads/
 │   │
 │   ├── .env
 │   ├── .gitignore
@@ -206,99 +206,105 @@ TASK_MANAGER_PROJECT/
 │   ├── package-lock.json
 │   └── server.js
 │
-├── frontend/Task-Manager/
+├── frontend/
 │   │
-│   ├── public/
-│   │
-│   ├── src/
-│   │
-│   │   ├── assets/
-│   │   │   └── images/
-│   │   │       ├── auth-img.png
-│   │   │       ├── hero.png
-│   │   │       └── react.svg
-│   │
-│   │   ├── components/
-│   │   │
-│   │   │   ├── Cards/
-│   │   │   │   ├── InfoCard.jsx
-│   │   │   │   └── TaskCard.jsx
-│   │   │   │
-│   │   │   ├── Charts/
-│   │   │   │   ├── CustomBarChart.jsx
-│   │   │   │   ├── CustomLegend.jsx
-│   │   │   │   ├── CustomPieChart.jsx
-│   │   │   │   └── CustomTooltip.jsx
-│   │   │   │
-│   │   │   ├── Inputs/
-│   │   │   │   ├── AddAttachmentsInput.jsx
-│   │   │   │   ├── Input.jsx
-│   │   │   │   ├── ProfilePhotoSelector.jsx
-│   │   │   │   ├── SelectDropdown.jsx
-│   │   │   │   ├── SelectUsers.jsx
-│   │   │   │   └── TodoListInput.jsx
-│   │   │   │
-│   │   │   ├── layouts/
-│   │   │   │   ├── AuthLayout.jsx
-│   │   │   │   └── DashboardLayout.jsx
-│   │   │   │
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── SideMenu.jsx
-│   │   │   ├── AvatarGroup.jsx
-│   │   │   ├── ForgeAssistant.jsx
-│   │   │   ├── KanbanBoard.jsx
-│   │   │   ├── Modal.jsx
-│   │   │   ├── Progress.jsx
-│   │   │   ├── TaskListTable.jsx
-│   │   │   ├── TaskStatusTabs.jsx
-│   │   │   └── ThemeToggle.jsx
-│   │
-│   │   ├── context/
-│   │   │   └── userContext.jsx
-│   │
-│   │   ├── hooks/
-│   │   │   └── useUserAuth.jsx
-│   │
-│   │   ├── pages/
-│   │   │
-│   │   │   ├── Admin/
-│   │   │   │   ├── CreateTask.jsx
-│   │   │   │   ├── Dashboard.jsx
-│   │   │   │   ├── ManageTasks.jsx
-│   │   │   │   └── ManageUsers.jsx
-│   │   │   │
-│   │   │   ├── Auth/
-│   │   │   │   ├── Login.jsx
-│   │   │   │   └── SignUp.jsx
-│   │   │   │
-│   │   │   └── User/
-│   │   │       ├── MyTasks.jsx
-│   │   │       ├── UserDashboard.jsx
-│   │   │       └── ViewTaskDetails.jsx
-│   │
-│   │   ├── routes/
-│   │   │   └── PrivateRoute.jsx
-│   │
-│   │   ├── utils/
-│   │   │   ├── apiPaths.js
-│   │   │   ├── axiosInstance.js
-│   │   │   ├── data.js
-│   │   │   ├── helper.js
-│   │   │   └── uploadImage.js
-│   │
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   │
-│   ├── .env
-│   ├── .gitignore
-│   ├── eslint.config.js
-│   ├── index.html
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   ├── vite.config.js
-│   ├── package.json
-└── └── package-lock.json
+│   └── Task-Manager/
+│       │
+│       ├── public/
+│       │
+│       ├── src/
+│       │   │
+│       │   ├── assets/
+│       │   │   └── images/
+│       │   │       ├── hero.png
+│       │   │       └── react.svg
+│       │   │
+│       │   ├── components/
+│       │   │   │
+│       │   │   ├── Cards/
+│       │   │   │   ├── InfoCard.jsx
+│       │   │   │   └── TaskCard.jsx
+│       │   │   │
+│       │   │   ├── Charts/
+│       │   │   │   ├── CustomBarChart.jsx
+│       │   │   │   ├── CustomLegend.jsx
+│       │   │   │   ├── CustomPieChart.jsx
+│       │   │   │   └── CustomTooltip.jsx
+│       │   │   │
+│       │   │   ├── Inputs/
+│       │   │   │   ├── AddAttachmentsInput.jsx
+│       │   │   │   ├── Input.jsx
+│       │   │   │   ├── ProfilePhotoSelector.jsx
+│       │   │   │   ├── SelectDropdown.jsx
+│       │   │   │   ├── SelectUsers.jsx
+│       │   │   │   └── TodoListInput.jsx
+│       │   │   │
+│       │   │   ├── layouts/
+│       │   │   │   ├── AuthLayout.jsx
+│       │   │   │   └── DashboardLayout.jsx
+│       │   │   │
+│       │   │   ├── AvatarGroup.jsx
+│       │   │   ├── ForgeAssistant.jsx
+│       │   │   ├── KanbanBoard.jsx
+│       │   │   ├── Modal.jsx
+│       │   │   ├── Navbar.jsx
+│       │   │   ├── Progress.jsx
+│       │   │   ├── SideMenu.jsx
+│       │   │   ├── TaskListTable.jsx
+│       │   │   ├── TaskStatusTabs.jsx
+│       │   │   └── ThemeToggle.jsx
+│       │   │
+│       │   ├── context/
+│       │   │   └── userContext.jsx
+│       │   │
+│       │   ├── hooks/
+│       │   │   └── useUserAuth.jsx
+│       │   │
+│       │   ├── pages/
+│       │   │   │
+│       │   │   ├── Admin/
+│       │   │   │   ├── CreateTask.jsx
+│       │   │   │   ├── Dashboard.jsx
+│       │   │   │   ├── ManageTasks.jsx
+│       │   │   │   └── ManageUsers.jsx
+│       │   │   │
+│       │   │   ├── Auth/
+│       │   │   │   ├── Login.jsx
+│       │   │   │   └── SignUp.jsx
+│       │   │   │
+│       │   │   └── User/
+│       │   │       ├── MyTasks.jsx
+│       │   │       ├── UserDashboard.jsx
+│       │   │       └── ViewTaskDetails.jsx
+│       │   │
+│       │   ├── routes/
+│       │   │   └── PrivateRoute.jsx
+│       │   │
+│       │   ├── utils/
+│       │   │   ├── apiPaths.js
+│       │   │   ├── axiosInstance.js
+│       │   │   ├── data.js
+│       │   │   ├── eventManager.js
+│       │   │   ├── helper.js
+│       │   │   └── uploadImage.js
+│       │   │
+│       │   ├── App.jsx
+│       │   ├── index.css
+│       │   └── main.jsx
+│       │
+│       ├── .env
+│       ├── .gitignore
+│       ├── eslint.config.js
+│       ├── index.html
+│       ├── package.json
+│       ├── package-lock.json
+│       ├── postcss.config.js
+│       ├── tailwind.config.js
+│       └── vite.config.js
+│
+├── screenshots/
+│
+└── README.md
 ```
 
 ---
