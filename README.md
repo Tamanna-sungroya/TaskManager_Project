@@ -1,5 +1,20 @@
 # **TaskForge - AI-Powered Task Management System**
 
+## 📸 Project Screenshots
+
+| Admin Dashboard | User Dashboard |
+|------------|--------------|
+| ![](./screenshots/admin-dashboard.png) | ![](./screenshots/user-dashboard.png) |
+
+| Login Page | SignUp Page |
+|------------|--------------|
+| ![](./screenshots/login.png) | ![](./screenshots/register.png) |
+
+| User Task Page | Create Task Page |
+|------------|--------------|
+| ![](./screenshots/my-tasks.png) | ![](./screenshots/create-task.png) |
+---
+
 A full-stack **AI-powered Task Management Platform** built using the MERN stack to help teams assign, track, and manage work efficiently with automation, analytics, secure authentication, and intelligent productivity assistance.
 
 TaskForge goes beyond a traditional task manager by integrating **AI guidance**, **workflow automation**, and **modern team collaboration tools** into a single productivity ecosystem.
