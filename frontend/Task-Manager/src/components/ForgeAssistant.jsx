@@ -110,7 +110,7 @@ const ForgeAssistant = () => {
   console.log("MESSAGES STATE:", messages);
 
   return (
-    <div className="card mt-5 p-4">
+    <div className="card mt-5 p-4 overflow-hidden">
       <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
         Forge AI Assistant
       </h3>
@@ -140,12 +140,12 @@ const ForgeAssistant = () => {
       </div>
 
       {/* Input Section */}
-      <div className="flex gap-2 mt-4">
+      <div className="flex gap-1 mt-4">
         <input
           type="text"
           id="chat-message"
           name="chat-message"
-          className="form-input flex-1"
+          className="flex-1 min-w-0 text-sm text-black dark:text-gray-100 outline-none bg-white dark:bg-gray-800 border border-slate-100 dark:border-gray-700 px-2 py-2 rounded-md placeholder:text-gray-500 dark:placeholder:text-gray-400"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="What should I do now?"
@@ -157,11 +157,11 @@ const ForgeAssistant = () => {
         />
 
         <button
-          className="add-btn px-4"
+          className="flex-shrink-0 px-2 py-2 text-xs font-medium text-white bg-blue-600 rounded-md cursor-pointer hover:bg-blue-700"
           onClick={ask}
           disabled={loading}
         >
-          {loading ? "Thinking..." : "Send"}
+          {loading ? "..." : "Send"}
         </button>
       </div>
     </div>

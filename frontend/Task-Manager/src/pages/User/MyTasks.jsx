@@ -156,13 +156,13 @@ const MyTasks = () => {
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2">
-                <input 
+              <div className="flex gap-1">
+                <input
                   type="text"
-                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  className="flex-1 min-w-0 px-2 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={chatQuery}
                   onChange={(e) => setChatQuery(e.target.value)}
-                  placeholder="What should I do now?" 
+                  placeholder="What should I do now?"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -170,8 +170,8 @@ const MyTasks = () => {
                     }
                   }}
                 />
-                <button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors" 
+                <button
+                  className="flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium transition-colors"
                   onClick={handleChatSend}
                   disabled={chatLoading}
                 >
