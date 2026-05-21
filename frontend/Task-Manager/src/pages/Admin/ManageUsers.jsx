@@ -79,7 +79,7 @@ const ManageUsers = () => {
                       className="w-10 h-10 rounded-full"
                     />
                     <div>
-                      <h3 className="font-medium">{user.name}</h3>
+                      <h3 className="font-medium text-gray-500">{user.name}</h3>
                       <p className="text-sm text-gray-500">{user.email}</p>
                       <p className="text-xs text-gray-400 capitalize">{user.role}</p>
                     </div>

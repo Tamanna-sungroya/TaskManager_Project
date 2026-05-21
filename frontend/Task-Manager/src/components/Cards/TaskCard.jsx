@@ -34,14 +34,34 @@ const TaskCard = ({
     const getPriorityTagColor = () => {
         switch(priority){
             case "Low":
-                return "text-emerald-500 bg-emerald-50 border border-emerald-500/10";
+                return "text-green-500 bg-green-50 border border-green-500/10";
 
             case "Medium":
-                return "text-amber-500 bg-amber-50 border border-amber-500/10";
-                
+                return "text-orange-500 bg-orange-50 border border-orange-500/10";
+
             default:
-                return "text-rose-500 bg-rose-50 border border-rose-500/10";
+                return "text-red-500 bg-red-50 border border-red-500/10";
         }
+    };
+
+    const getProgressData = () => {
+        const total = todoChecklist?.length || 0;
+        if (total === 0) return { completed: 0, total: 0, percentage: 0 };
+
+        let completed = 0;
+
+        // Dynamically adjust based on status
+        if (status === "Pending") {
+            completed = 0;
+        } else if (status === "Completed") {
+            completed = total;
+        } else if (status === "In Progress") {
+            // Calculate half of total (rounded up)
+            completed = Math.ceil(total / 2);
+        }
+
+        const percentage = total > 0 ? (completed / total) * 100 : 0;
+        return { completed, total, percentage };
     };
 
     return <div 
@@ -78,14 +98,20 @@ const TaskCard = ({
                     {description}
                 </p>
 
-                <p className="text-[13px] text-gray-700/80 font-medium mt-2 mb-2 leading-[18px]">
-                    Task Done:{" "}
-                    <span className="font-semibold text-gray-700">
-                        {completedTodoCount} / {todoChecklist.length || 0}
-                    </span>
-                </p>
-
-                <Progress progress={progress} status={status} />
+                {(() => {
+                    const { completed, total } = getProgressData();
+                    return total > 0 && (
+                        <>
+                            <p className="text-[13px] text-gray-700/80 font-medium mt-2 mb-2 leading-[18px]">
+                                Task Done:{" "}
+                                <span className="font-semibold text-gray-700">
+                                    {completed} / {total}
+                                </span>
+                            </p>
+                            <Progress progress={getProgressData().percentage} status={status} />
+                        </>
+                    );
+                })()}
             </div>
 
             <div className="px-4">

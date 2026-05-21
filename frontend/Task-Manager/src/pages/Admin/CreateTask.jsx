@@ -33,6 +33,7 @@ const CreateTask = () => {
   const [loading, setLoading] = useState(false);
 
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
   useEffect(() => {
     getTaskDetailsByID();
@@ -177,19 +178,23 @@ const CreateTask = () => {
   // Delete Task
   const deleteTask = async () => {
     setLoading(true);
+    setOpenDeleteAlert(false);
 
     try {
       const response = await axiosInstance.delete(API_PATHS.TASKS.DELETE_TASK(taskId));
 
-      toast.success("Task Deleted Successfully");
-
-      navigate("/admin/tasks");
+      setShowDeleteSuccess(true);
     } catch (error) {
       console.error("Error deleting task:", error);
       setLoading(false);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteSuccessOk = () => {
+    setShowDeleteSuccess(false);
+    navigate("/admin/tasks");
   };
 
   return (
@@ -318,7 +323,7 @@ const CreateTask = () => {
             )}
 
             <div className="flex justify-end mt-7">
-              <button 
+              <button
               className="add-btn"
               onClick={handleSubmit}
               disabled={loading}
@@ -329,6 +334,49 @@ const CreateTask = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {openDeleteAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Delete Task</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Are you sure you want to delete this task? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setOpenDeleteAlert(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteTask}
+                disabled={loading}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50"
+              >
+                {loading ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Success Modal */}
+      {showDeleteSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4">
+            <h3 className="text-lg font-semibold text-green-600 mb-2">Task Deleted Successfully</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">The task has been deleted successfully.</p>
+            <div className="flex justify-end">
+              <button
+                onClick={handleDeleteSuccessOk}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   )
 }

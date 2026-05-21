@@ -111,19 +111,19 @@ const ForgeAssistant = () => {
 
   return (
     <div className="card mt-5 p-4">
-      <h3 className="text-lg font-semibold mb-4 text-gray-300 dark:text-white">
+      <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
         Forge AI Assistant
       </h3>
 
       {/* Chat Messages */}
-      <div className="h-80 overflow-y-auto border rounded-lg p-3 space-y-3 bg-white dark:bg-gray-900">
+      <div className="h-80 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg p-3 space-y-3 bg-white dark:bg-gray-900">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`p-3 rounded-lg max-w-[90%] ${
               message.role === "assistant"
-                ? "bg-blue-100 dark:bg-blue-900 text-black dark:text-white"
-                : "bg-gray-200 dark:bg-gray-700 text-black dark:text-white ml-auto"
+                ? "bg-blue-100 dark:bg-blue-900/30 text-gray-900 dark:text-gray-100 border border-blue-200 dark:border-blue-800"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 ml-auto"
             }`}
           >
             <p className="text-sm whitespace-pre-wrap break-words">
@@ -133,7 +133,7 @@ const ForgeAssistant = () => {
         ))}
 
         {loading && (
-          <div className="bg-blue-100 dark:bg-blue-900 text-black dark:text-white p-3 rounded-lg w-fit">
+          <div className="bg-blue-100 dark:bg-blue-900/30 text-gray-900 dark:text-gray-100 p-3 rounded-lg w-fit border border-blue-200 dark:border-blue-800">
             Thinking...
           </div>
         )}

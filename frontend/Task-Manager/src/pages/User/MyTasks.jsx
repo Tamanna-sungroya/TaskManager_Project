@@ -91,7 +91,8 @@ const MyTasks = () => {
     
     try {
       const response = await axiosInstance.post(API_PATHS.AI.ASK, { query: userMessage.text });
-      const assistantMessage = { role: "assistant", text: response.data.response };
+      const aiText = response.data?.data?.advice || response.data?.data?.response || "Could not generate advice right now.";
+      const assistantMessage = { role: "assistant", text: aiText };
       setChatMessages((m) => [...m, assistantMessage]);
     } catch (error) {
       setChatMessages((m) => [...m, { role: "assistant", text: "Could not generate advice right now." }]);
@@ -137,28 +138,28 @@ const MyTasks = () => {
 
         {/* Chat Assistant - Conditionally Rendered */}
         {showChat && (
-          <div className="fixed bottom-20 right-6 z-40 w-80 max-h-96 bg-white rounded-lg shadow-xl border border-gray-200">
+          <div className="fixed bottom-20 right-6 z-40 w-80 max-h-96 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
             <div className="p-4">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="text-lg font-semibold">Forge AI Assistant</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Forge AI Assistant</h3>
                 <button
                   onClick={() => setShowChat(false)}
-                  className="text-gray-400 hover:text-gray-600 text-xl"
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl"
                 >
                   ✕
                 </button>
               </div>
               <div className="space-y-2 max-h-64 overflow-auto mb-3">
                 {chatMessages.map((m, idx) => (
-                  <div key={idx} className={`p-2 rounded ${m.role === "assistant" ? "bg-blue-50" : "bg-gray-100"}`}>
-                    <p className="text-sm">{m.text}</p>
+                  <div key={idx} className={`p-2 rounded ${m.role === "assistant" ? "bg-blue-50 dark:bg-blue-900/30 text-gray-900 dark:text-gray-100" : "bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"}`}>
+                    <p className="text-sm whitespace-pre-wrap break-words">{m.text}</p>
                   </div>
                 ))}
               </div>
               <div className="flex gap-2">
                 <input 
                   type="text"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
                   value={chatQuery}
                   onChange={(e) => setChatQuery(e.target.value)}
                   placeholder="What should I do now?" 

@@ -9,13 +9,44 @@ const statuses = ["Pending", "In Progress", "Completed"];
 const TaskItem = ({ task }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: task._id });
   const style = { transform: CSS.Transform.toString(transform), transition };
+
+  const getPriorityColor = () => {
+    switch(task.priority){
+      case "Low":
+        return "bg-green-100 text-green-800";
+      case "Medium":
+        return "bg-orange-100 text-orange-800";
+      default:
+        return "bg-red-100 text-red-800";
+    }
+  };
+
+  const getProgressData = () => {
+    const total = task.todoChecklist?.length || 0;
+    if (total === 0) return { completed: 0, total: 0, percentage: 0 };
+
+    let completed = 0;
+
+    // Dynamically adjust based on status
+    if (task.status === "Pending") {
+      completed = 0;
+    } else if (task.status === "Completed") {
+      completed = total;
+    } else if (task.status === "In Progress") {
+      // Calculate half of total (rounded up)
+      completed = Math.ceil(total / 2);
+    }
+
+    const percentage = total > 0 ? (completed / total) * 100 : 0;
+    return { completed, total, percentage };
+  };
   
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="card p-4 cursor-grab hover:shadow-md transition-shadow">
       {/* Header with title and priority */}
       <div className="flex justify-between items-start mb-3">
         <h4 className="font-medium text-sm text-gray-900 dark:text-white flex-1 pr-2">{task.title}</h4>
-        <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded whitespace-nowrap">
+        <span className={`text-xs px-2 py-1 rounded whitespace-nowrap ${getPriorityColor()}`}>
           {task.priority}
         </span>
       </div>
@@ -64,19 +95,22 @@ const TaskItem = ({ task }) => {
           </div>
         )}
         
-        {task.todoChecklist && task.todoChecklist.length > 0 && (
-          <div className="flex-1">
-            <div className="text-xs text-gray-500 mb-1">
-              {task.completedTodoCount || 0}/{task.todoChecklist.length}
+        {task.todoChecklist && task.todoChecklist.length > 0 && (() => {
+          const { completed, total, percentage } = getProgressData();
+          return (
+            <div className="flex-1">
+              <div className="text-xs text-gray-500 mb-1">
+                {completed}/{total}
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-1.5">
+                <div 
+                  className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: `${percentage}%` }}
+                />
+              </div>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
-              <div 
-                className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-                style={{ width: `${((task.completedTodoCount || 0) / task.todoChecklist.length) * 100}%` }}
-              />
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </div>
   );
